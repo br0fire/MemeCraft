@@ -12,7 +12,7 @@ import os
 logger = logging.getLogger(__name__)
 
 
-def pipeline(prompt: str):
+def pipeline(prompt: str, topic: str | None):
     logger.info("Start meme generation")
 
     data_images = MemesDataset(root_dir="./img")
@@ -20,10 +20,13 @@ def pipeline(prompt: str):
 
     model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+    generator = MemeCaptionGenerator()
+
+    response = generator.generate_caption(topic=topic) if len(prompt) == 0 else prompt
 
     scores = []
     for batch in dataloader:
-        inputs = processor(text=[prompt], images=batch, return_tensors="pt", padding=True)
+        inputs = processor(text=[response], images=batch, return_tensors="pt", padding=True)
 
         with torch.no_grad():
             outputs = model(**inputs)
@@ -40,11 +43,20 @@ def pipeline(prompt: str):
     for i, img in enumerate(top_images):
         add_caption_to_image(img, prompt, Path("./mem_img") / f"mem_image_{i}.jpg")
 
+    generator = MemeCaptionGenerator()
+    while True:
+        s = input("Enter a topic of a meme: ").strip()
+        if len(s) == 0:
+            print(generator.generate_caption(), end="\n\n")
+        else:
+            print(generator.generate_caption(topic=s), end="\n\n")
+
 
 if __name__ == '__main__':
     logger.info("Start meme generation")
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prompt', default='', type=str)
+    parser.add_argument('-t', '--topic', default='', type=str)
     args = parser.parse_args()
 
-    pipeline(args.prompt)
+    pipeline(args.prompt, args.topic)
