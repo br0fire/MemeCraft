@@ -36,7 +36,7 @@ def pipeline(prompt: str):
 
     os.makedirs("./mem_img", exist_ok=True)
     for i, img in enumerate(top_images):
-        img.save(Path("./mem_img") / f"mem_image_{i}")
+        img.save(Path("./mem_img") / f"mem_image_{i}.jpg")
 
 
 if __name__ == '__main__':
