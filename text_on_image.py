@@ -5,14 +5,14 @@ def add_caption_to_image(image, caption, output_path="output.jpg"):
     draw = ImageDraw.Draw(image)
     width, height = image.size
 
-    font = ImageFont.truetype("Impact.ttf", size=10000)
+    font = ImageFont.load_default(size=10000)
 
     text_width = draw.textlength(caption, font=font)
     font_size = font.size
     text_height = font_size * (caption.count("\n") + 1)
 
     while text_width > 0.9 * width:
-        font = ImageFont.truetype("Impact.ttf", size=font.size - 3)
+        font = ImageFont.load_default(size=font.size - 3)
         text_width = draw.textlength(caption, font=font)
         font_size = font.size
         text_height = font_size * (caption.count("\n") + 1)
