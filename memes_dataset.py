@@ -1,9 +1,15 @@
 from torch.utils.data import Dataset, DataLoader
-import PIL
+from PIL import Image
 import os
 
-class MemesDataset(Dataset):
 
+def meme_collate_fn(batch):
+    new_batch = [item for item in batch]
+
+    return new_batch
+
+
+class MemesDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
@@ -16,13 +22,16 @@ class MemesDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        image = PIL.Image.open(self.images[idx])
+        image = Image.open(self.images[idx])
         if self.transform:
             image = self.transform(image)
 
         return image
-    
-def meme_collate_fn(batch):
-    new_batch = [item for item in batch]
 
-    return new_batch
+    def create_dataloader(self, batch_size: int, shuffle: bool = False, num_workers: int = 0) -> DataLoader:
+        return DataLoader(self,
+                          batch_size=batch_size,
+                          shuffle=shuffle,
+                          collate_fn=meme_collate_fn,
+                          num_workers=num_workers
+                          )
