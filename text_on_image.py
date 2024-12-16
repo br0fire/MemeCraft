@@ -1,8 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 
 
-def add_caption_to_image(image_path, caption, output_path="output.jpg"):
-    image = Image.open(image_path)
+def add_caption_to_image(image, caption, output_path="output.jpg"):
     draw = ImageDraw.Draw(image)
     width, height = image.size
 
@@ -29,6 +28,6 @@ def add_caption_to_image(image_path, caption, output_path="output.jpg"):
     image.save(output_path)
 
 
-add_caption_to_image(
-    "input.png", "This is a meme caption! This is a meme caption!", "output.jpg"
-)
+# add_caption_to_image(
+#     "input.png", "This is a meme caption! This is a meme caption!", "output.jpg"
+# )

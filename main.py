@@ -1,5 +1,7 @@
 from memes_dataset import MemesDataset
 from transformers import CLIPProcessor, CLIPModel
+from meme_caption_generator import  MemeCaptionGenerator
+from text_on_image import add_caption_to_image
 import torch
 import numpy as np
 import argparse
@@ -36,7 +38,7 @@ def pipeline(prompt: str):
 
     os.makedirs("./mem_img", exist_ok=True)
     for i, img in enumerate(top_images):
-        img.save(Path("./mem_img") / f"mem_image_{i}.jpg")
+        add_caption_to_image(img, prompt, Path("./mem_img") / f"mem_image_{i}.jpg")
 
 
 if __name__ == '__main__':
