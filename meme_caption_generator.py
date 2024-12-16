@@ -1,11 +1,12 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
+
 class MemeCaptionGenerator:
     def __init__(self, model_name="microsoft/Phi-3.5-mini-instruct"):
         """
         Initialize the model and tokenizer for meme caption generation.
             Alternatively, use `thesven/Phi-3.5-mini-instruct-awq` as a model (for smaller VRAM usage)
-        
+
         Args:
             model_name (str): Name of the pretrained model to use.
         """
@@ -36,9 +37,9 @@ class MemeCaptionGenerator:
         if full_caption:
             return full_caption
 
-        prompt = "Write a 10 words max caption for a meme. Return just a caption with no formatting"
+        prompt = "Write a 10 words max caption for a meme. Return just a caption with no formatting or additional words. Do not use hashtags."
         if topic:
-            prompt = f"Write a 10 words max caption for a meme of {topic}. Return just a caption with no formatting or additional words."
+            prompt = f"Write a 10 words max caption for a meme of {topic}. Return just a caption with no formatting or additional words. Do not use hashtags."
 
         messages = [
             {"role": "system", "content": "You are a helpful AI assistant."},
@@ -57,9 +58,12 @@ class MemeCaptionGenerator:
             output = self.pipeline(messages, **generation_args)
 
         txt = output[0]["generated_text"].strip()
-        if txt[0] == txt[-1] == '"':
-            return txt[1:-1]
+        if txt[0] == '"':
+            txt = txt[1:]
+        if txt[-1] == '"':
+            txt = txt[:-1]
         return txt
+
 
 if __name__ == "__main__":
     # Example usage (interactive)
@@ -69,6 +73,6 @@ if __name__ == "__main__":
     while True:
         s = input("Enter a topic of a meme: ").strip()
         if len(s) == 0:
-            print(generator.generate_caption(), end='\n\n')
+            print(generator.generate_caption(), end="\n\n")
         else:
-            print(generator.generate_caption(topic=s), end='\n\n')
+            print(generator.generate_caption(topic=s), end="\n\n")
