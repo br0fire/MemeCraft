@@ -13,8 +13,13 @@ class MemesDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
-        self.images = [os.path.join(self.root_dir, image) for image in os.listdir(root_dir) 
-                       if os.path.isfile(os.path.join(self.root_dir, image)) and (image.endswith('.jpg') or image.endswith('.png'))]
+        self.images = []
+        for dir in os.listdir(self.root_dir):
+            dir_path = os.path.join(self.root_dir, dir)
+            self.images += [os.path.join(dir_path, image) for image in os.listdir(dir_path) 
+                       if os.path.isfile(os.path.join(dir_path, image)) and (image.endswith('.jpg') \
+                       or image.endswith('.png') or image.endswith('.jpeg')or image.endswith('.JPG'))]
+        
         if len(self.images) == 0:
             raise ValueError('Dataset could not be empty')
           
