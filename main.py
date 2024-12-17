@@ -43,7 +43,7 @@ def pipeline(prompt: str | None, topic: str | None, data: str):
     os.makedirs("./mem_img", exist_ok=True)
     for i, img in enumerate(top_images):
         file_name = Path(data_images.images[i]).name
-        add_caption_to_image(img, response, Path("./mem_img") / f"{response}_{file_name}")
+        add_caption_to_image(img, response, Path("./mem_img") / f"top_{i+1}_{response}_{file_name}")
     logger.info("Memes saved!")
 
 
