@@ -1,18 +1,19 @@
-from memes_dataset import MemesDataset
-from transformers import CLIPProcessor, CLIPModel
-from meme_caption_generator import  MemeCaptionGenerator
-from text_on_image import add_caption_to_image
-import torch
-import numpy as np
 import argparse
-import logging
-from pathlib import Path
 import os
+import warnings
+from pathlib import Path
 
-logger = logging.getLogger(__name__)
+import numpy as np
+import torch
+from loguru import logger
+from transformers import CLIPProcessor, CLIPModel
+
+from meme_caption_generator import MemeCaptionGenerator
+from memes_dataset import MemesDataset
+from text_on_image import add_caption_to_image
 
 
-def pipeline(prompt: str, topic: str | None):
+def pipeline(prompt: str | None, topic: str | None):
     logger.info("Start meme generation")
 
     data_images = MemesDataset(root_dir="./img")
@@ -23,6 +24,7 @@ def pipeline(prompt: str, topic: str | None):
     generator = MemeCaptionGenerator()
 
     response = generator.generate_caption(topic=topic) if len(prompt) == 0 else prompt
+    logger.info(f"LLM: {response}")
 
     scores = []
     for batch in dataloader:
@@ -41,19 +43,12 @@ def pipeline(prompt: str, topic: str | None):
 
     os.makedirs("./mem_img", exist_ok=True)
     for i, img in enumerate(top_images):
-        add_caption_to_image(img, prompt, Path("./mem_img") / f"mem_image_{i}.jpg")
-
-    generator = MemeCaptionGenerator()
-    while True:
-        s = input("Enter a topic of a meme: ").strip()
-        if len(s) == 0:
-            print(generator.generate_caption(), end="\n\n")
-        else:
-            print(generator.generate_caption(topic=s), end="\n\n")
+        add_caption_to_image(img, response, Path("./mem_img") / f"mem_image_{i}.jpg")
 
 
 if __name__ == '__main__':
-    logger.info("Start meme generation")
+    warnings.filterwarnings("ignore")
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prompt', default='', type=str)
     parser.add_argument('-t', '--topic', default='', type=str)

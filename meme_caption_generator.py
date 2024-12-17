@@ -63,16 +63,3 @@ class MemeCaptionGenerator:
         if txt[-1] == '"':
             txt = txt[:-1]
         return txt
-
-
-if __name__ == "__main__":
-    # Example usage (interactive)
-    # Press enter to simulate an empty prompt
-    # Enter a topic to use it for a caption generation
-    generator = MemeCaptionGenerator()
-    while True:
-        s = input("Enter a topic of a meme: ").strip()
-        if len(s) == 0:
-            print(generator.generate_caption(), end="\n\n")
-        else:
-            print(generator.generate_caption(topic=s), end="\n\n")
