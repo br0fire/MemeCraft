@@ -53,7 +53,8 @@ def pipeline(prompt: str | None, topic: str | None, data: str):
 
     os.makedirs("./mem_img", exist_ok=True)
     for i, img in enumerate(top_images):
-        add_caption_to_image(img, response, Path("./mem_img") / f"mem_image_{i}.jpg")
+        file_name = Path(data_images.images[i]).name
+        add_caption_to_image(img, response, Path("./mem_img") / f"{response}_{file_name}")
 
 
 if __name__ == '__main__':
