@@ -6,8 +6,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from loguru import logger
-from tqdm.auto import tqdm
-from transformers import CLIPProcessor, CLIPModel
+from transformers import CLIPTextModelWithProjection, AutoTokenizer
 
 from meme_caption_generator import MemeCaptionGenerator
 from memes_dataset import MemesDataset
@@ -18,13 +17,8 @@ def pipeline(prompt: str | None, topic: str | None, data: str):
     logger.info("Start meme generation")
 
     data_images = MemesDataset(root_dir=data)
-    dataloader = data_images.create_dataloader(batch_size=4, shuffle=False)
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
-    model = CLIPModel.from_pretrained("wkcn/TinyCLIP-ViT-61M-32-Text-29M-LAION400M").to(device)
-    # processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-    processor = CLIPProcessor.from_pretrained("wkcn/TinyCLIP-ViT-61M-32-Text-29M-LAION400M")
+    model = CLIPTextModelWithProjection.from_pretrained("openai/clip-vit-base-patch32")
+    tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-base-patch32")
     if len(prompt) == 0:
         generator = MemeCaptionGenerator()
         response = generator.generate_caption(topic=topic)
@@ -34,19 +28,14 @@ def pipeline(prompt: str | None, topic: str | None, data: str):
 
     scores = []
     logger.info("Data Processing...")
-    for batch in tqdm(dataloader):
-        inputs = processor(text=[response], images=batch, return_tensors="pt", padding=True)
-        inputs['input_ids'] = inputs['input_ids'].to(device)
-        inputs['attention_mask'] = inputs['attention_mask'].to(device)
-        inputs['pixel_values'] = inputs['pixel_values'].to(device)
+    inputs = tokenizer([response], return_tensors="pt", padding=True)
 
-        with torch.no_grad():
-            outputs = model(**inputs)
+    outputs = model(**inputs)
 
-        img_emb = outputs.image_embeds
-        txt_emb = outputs.text_embeds
-        clip_score = txt_emb @ img_emb.T
-        scores.extend(clip_score.squeeze(0).cpu().tolist())
+    txt_emb = outputs.text_embeds
+    img_emb = torch.load("result.pt")
+    clip_score = txt_emb @ img_emb.T
+    scores.extend(clip_score.squeeze(0).tolist())
 
     top_scores_indexes = np.argsort(scores)[::-1][:3]
     top_images = [data_images[ind] for ind in top_scores_indexes]
@@ -55,6 +44,7 @@ def pipeline(prompt: str | None, topic: str | None, data: str):
     for i, img in enumerate(top_images):
         file_name = Path(data_images.images[i]).name
         add_caption_to_image(img, response, Path("./mem_img") / f"{response}_{file_name}")
+    logger.info("Memes saved!")
 
 
 if __name__ == '__main__':
