@@ -1,5 +1,7 @@
+from PIL import Image, ImageFile
 from torch.utils.data import Dataset, DataLoader
-from PIL import Image
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 import os
 
 
@@ -16,13 +18,14 @@ class MemesDataset(Dataset):
         self.images = []
         for dir in os.listdir(self.root_dir):
             dir_path = os.path.join(self.root_dir, dir)
-            self.images += [os.path.join(dir_path, image) for image in os.listdir(dir_path) 
-                       if os.path.isfile(os.path.join(dir_path, image)) and (image.endswith('.jpg') \
-                       or image.endswith('.png') or image.endswith('.jpeg')or image.endswith('.JPG'))]
-        
+            self.images += [os.path.join(dir_path, image) for image in os.listdir(dir_path)
+                            if os.path.isfile(os.path.join(dir_path, image)) and (image.endswith('.jpg') \
+                                                                                  or image.endswith(
+                            '.png') or image.endswith('.jpeg') or image.endswith('.JPG'))]
+
         if len(self.images) == 0:
             raise ValueError('Dataset could not be empty')
-          
+
     def __len__(self):
         return len(self.images)
 
