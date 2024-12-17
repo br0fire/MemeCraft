@@ -17,7 +17,6 @@ def pipeline(prompt: str | None, topic: str | None, data: str):
     logger.info("Start meme generation")
 
     data_images = MemesDataset(root_dir=data)
-    dataloader = data_images.create_dataloader(batch_size=4, shuffle=False)
     model = CLIPTextModelWithProjection.from_pretrained("openai/clip-vit-base-patch32")
     tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-base-patch32")
     if len(prompt) == 0:
