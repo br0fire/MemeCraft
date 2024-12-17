@@ -6,7 +6,7 @@ def add_caption_to_image(image, caption, output_path="output.jpg"):
     draw = ImageDraw.Draw(image)
     width, height = image.size
 
-    font = ImageFont.load_default(size=10000)
+    font = ImageFont.load_default(size=48)
 
     text_width = draw.textlength(caption, font=font)
     font_size = font.size

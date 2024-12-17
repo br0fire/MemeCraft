@@ -8,8 +8,8 @@ from memes_dataset import MemesDataset
 data_images = MemesDataset(root_dir="./datasets")
 dataloader = data_images.create_dataloader(batch_size=4, shuffle=False)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = CLIPVisionModelWithProjection.from_pretrained("openai/clip-vit-base-patch32").to(device)
-processor = AutoProcessor.from_pretrained("openai/clip-vit-base-patch32")
+model = CLIPVisionModelWithProjection.from_pretrained("openai/clip-vit-large-patch14").to(device)
+processor = AutoProcessor.from_pretrained("openai/clip-vit-large-patch14")
 img_emb = []
 
 for batch in tqdm(dataloader):
