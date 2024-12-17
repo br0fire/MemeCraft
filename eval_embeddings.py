@@ -18,7 +18,7 @@ for batch in tqdm(dataloader):
     with torch.no_grad():
         outputs = model(**inputs)
 
-img_emb.append(outputs.image_embeds.cpu())
+    img_emb.append(outputs.image_embeds.cpu())
 
 result = torch.cat(img_emb)
 torch.save(result, "result.pt")

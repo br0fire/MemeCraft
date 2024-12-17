@@ -39,7 +39,6 @@ def pipeline(prompt: str | None, topic: str | None, data: str):
 
     top_scores_indexes = np.argsort(scores)[::-1][:3]
     top_images = [data_images[ind] for ind in top_scores_indexes]
-
     os.makedirs("./mem_img", exist_ok=True)
     for i, img in enumerate(top_images):
         file_name = Path(data_images.images[i]).name

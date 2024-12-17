@@ -22,10 +22,9 @@ class MemesDataset(Dataset):
                             if os.path.isfile(os.path.join(dir_path, image)) and (image.endswith('.jpg') \
                                                                                   or image.endswith(
                             '.png') or image.endswith('.jpeg') or image.endswith('.JPG'))]
-
         if len(self.images) == 0:
             raise ValueError('Dataset could not be empty')
-
+        self.images = sorted(self.images)
     def __len__(self):
         return len(self.images)
 
