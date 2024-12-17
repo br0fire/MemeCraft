@@ -27,4 +27,3 @@ def add_caption_to_image(image, caption, output_path="output.jpg"):
     draw.text((text_x, text_y), caption, font=font, fill="white", align="center")
 
     image.save(output_path)
-

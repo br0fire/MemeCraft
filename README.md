@@ -1,15 +1,10 @@
 # MemeCraft
-### Transfromers in CV course final project
 
-Our team:
+The following is a repository for the final project for Transfromers in CV course.
 
-1) Boris Mikheev
-2) Ivan Listopadov
-3) Roman Makarov
-4) Sergey Grozny
-5) Yurii Melnik
+# Usage
 
-## How to set environment:
+## Set up the environment
 
 Run the following command in your virtual environment to install Poetry using the official installer:
 `pipx install poetry`
@@ -19,3 +14,24 @@ Set your local configuration with:
 
 Install all necessary dependencies from pyproject.toml:
 `poetry install`
+
+## Proceed with the following
+
+- Download additional datasets using `get_dataset.sh` if you wish.
+- Run `eval_embeddings.py` to update embeddings.
+    ```
+    python eval_embeddings.py
+    ```
+- Run `main.py` to generate memes
+    ```
+    python main.py
+    ```
+    Use flag `-p` to pass your own meme caption, flag `-t` to pass a topic for a caption, and flag `-d` to specify path to the dataset.
+
+# Team Members
+
+- Boris Mikheev
+- Ivan Listopadov
+- Roman Makarov
+- Sergey Grozny
+- Yurii Melnik

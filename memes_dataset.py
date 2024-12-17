@@ -1,5 +1,5 @@
 from PIL import Image, ImageFile
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 import os
@@ -18,13 +18,21 @@ class MemesDataset(Dataset):
         self.images = []
         for dir in os.listdir(self.root_dir):
             dir_path = os.path.join(self.root_dir, dir)
-            self.images += [os.path.join(dir_path, image) for image in os.listdir(dir_path)
-                            if os.path.isfile(os.path.join(dir_path, image)) and (image.endswith('.jpg') \
-                                                                                  or image.endswith(
-                            '.png') or image.endswith('.jpeg') or image.endswith('.JPG'))]
+            self.images += [
+                os.path.join(dir_path, image)
+                for image in os.listdir(dir_path)
+                if os.path.isfile(os.path.join(dir_path, image))
+                and (
+                    image.endswith(".jpg")
+                    or image.endswith(".png")
+                    or image.endswith(".jpeg")
+                    or image.endswith(".JPG")
+                )
+            ]
         if len(self.images) == 0:
-            raise ValueError('Dataset could not be empty')
+            raise ValueError("Dataset could not be empty")
         self.images = sorted(self.images)
+
     def __len__(self):
         return len(self.images)
 
@@ -35,10 +43,13 @@ class MemesDataset(Dataset):
 
         return image
 
-    def create_dataloader(self, batch_size: int, shuffle: bool = False, num_workers: int = 0) -> DataLoader:
-        return DataLoader(self,
-                          batch_size=batch_size,
-                          shuffle=shuffle,
-                          collate_fn=meme_collate_fn,
-                          num_workers=num_workers
-                          )
+    def create_dataloader(
+        self, batch_size: int, shuffle: bool = False, num_workers: int = 0
+    ) -> DataLoader:
+        return DataLoader(
+            self,
+            batch_size=batch_size,
+            shuffle=shuffle,
+            collate_fn=meme_collate_fn,
+            num_workers=num_workers,
+        )
