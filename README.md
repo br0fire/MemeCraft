@@ -20,11 +20,11 @@ Install all necessary dependencies from pyproject.toml:
 - Download additional datasets using `get_dataset.sh` if you wish.
 - Run `eval_embeddings.py` to update embeddings.
     ```
-    python eval_embeddings.py
+    python3 eval_embeddings.py
     ```
 - Run `main.py` to generate memes
     ```
-    python main.py
+    python3 main.py
     ```
     Use flag `-p` to pass your own meme caption, flag `-t` to pass a topic for a caption, and flag `-d` to specify path to the dataset.
 
